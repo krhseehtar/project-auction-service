@@ -1,0 +1,44 @@
+services:
+  # supply-side-service:
+  #   build:
+  #     context: ./supply-side-service
+  #   environment:
+  #     - MYSQL_HOST=mysql_db  # Set the MySQL host environment variable
+  #   depends_on:
+  #     - mysql_db
+  #   ports:
+  #     - "8080:8080"
+  #   networks:
+  #     - mynetwork
+  #   restart: on-failure
+    
+  demand-side-service:
+    build:
+      context: ./demand-side-service
+    environment:
+      - MYSQL_HOST=mysql_db  # Set the MySQL host environment variable
+    depends_on:
+      - mysql_db
+    ports:
+      - "8081:8081"
+    networks:
+      - mynetwork
+    #restart: on-failure
+
+  mysql_db:
+    image: mysql:8.1.0
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: test
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql  # Mount the initialization script
+    networks:
+      - mynetwork
+    restart: unless-stopped
+
+networks:
+  mynetwork:
+    driver: bridge
