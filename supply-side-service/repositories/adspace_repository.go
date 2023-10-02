@@ -115,7 +115,7 @@ func (r *AdSpaceRepository) FindWinner(adspaceID int) (int, error) {
 }
 
 func (r *AdSpaceRepository) UpdateWinner(adspaceID int, winnerID int) (bool, error) {
-	stmt, err := r.db.Prepare("UPDATE ad_spaces SET winner = ? WHERE id = ?")
+	stmt, err := r.db.Prepare("UPDATE ad_spaces SET winner_id = ? WHERE id = ?")
 	if err != nil {
 		return false, err
 	}
