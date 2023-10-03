@@ -24,11 +24,14 @@ func main() {
 	adspaceService := services.NewAdSpaceService(adspaceRepository)
 	adspaceHandler := handlers.NewAdSpaceHandler(adspaceService)
 
-	router.POST("supply-service/adspaces", adspaceHandler.CreateAdSpace)
-	router.GET("supply-service/adspaces", adspaceHandler.GetAllAdSpaces)
-	router.GET("supply-service/adspaces/:id", adspaceHandler.GetAdSpaceByID)
-	router.GET("supply-service/adspaces/:id/winner", adspaceHandler.GetWinner)
-	// Add other routes
+	adspaceRouter := router.Group("/supply-service/adspaces")
+	{
+		adspaceRouter.POST("", adspaceHandler.CreateAdSpace)
+		adspaceRouter.GET("", adspaceHandler.GetAllAdSpaces)
+		adspaceRouter.GET("/:id", adspaceHandler.GetAdSpaceByID)
+		adspaceRouter.GET("/:id/winner", adspaceHandler.GetWinner)
+
+	}
 
 	router.Run(":8080")
 

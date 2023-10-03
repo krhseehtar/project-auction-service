@@ -25,12 +25,19 @@ func main() {
 	bidService := services.NewBidService(bidRepository)
 	bidHandler := handlers.NewBidHandler(bidService)
 
-	router.POST("/demand_service/bidders", bidHandler.HandleRegisterBidder)
-	router.GET("/demand_service/bidders", bidHandler.HandleGetAllBidders)
-	router.GET("/demand_service/bidders/:id", bidHandler.HandleGetBidderByID)
-	router.POST("/demand_service/bidders/:id/bids", bidHandler.HandlePlaceBid)
-	router.GET("/demand_service/adspaces/:id/bids", bidHandler.HandleGetBidsByAdSpaceID)
-	router.GET("/demand_service/bidders/:id/bids", bidHandler.HandleGetAllBidsByBidderID)
-	router.GET("/demand_service/bidders/:id/adspaces/:adspaceID/bids", bidHandler.HandleGetAllBidsByBidderIDAndAdSpaceID)
+	biddersRouter := router.Group("/demand_service/bidders")
+	{
+		biddersRouter.POST("", bidHandler.HandleRegisterBidder)
+		biddersRouter.GET("", bidHandler.HandleGetAllBidders)
+		biddersRouter.GET("/:id", bidHandler.HandleGetBidderByID)
+		biddersRouter.POST("/:id/bids", bidHandler.HandlePlaceBid)
+		biddersRouter.GET("/:id/bids", bidHandler.HandleGetAllBidsByBidderID)
+		biddersRouter.GET("/:id/adspaces/:adspaceID/bids", bidHandler.HandleGetAllBidsByBidderIDAndAdSpaceID)
+	}
+	adspaceRouter := router.Group("/demand_service/adspaces")
+	{
+		adspaceRouter.GET("/:id/bids", bidHandler.HandleGetBidsByAdSpaceID)
+
+	}
 	router.Run(":8081")
 }
