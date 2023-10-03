@@ -4,6 +4,7 @@ import (
 	"auction-service/supply-side-service/models"
 	"database/sql"
 	"errors"
+	"log"
 	"time"
 )
 
@@ -18,6 +19,7 @@ func NewAdSpaceRepository(db *sql.DB) AdSpaceRepository {
 func (r *AdSpaceRepository) GetAllAdSpaces() ([]models.AdSpace, error) {
 	rows, err := r.db.Query("SELECT * FROM ad_spaces")
 	if err != nil {
+		log.Println("error while executing query. error:", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -27,16 +29,19 @@ func (r *AdSpaceRepository) GetAllAdSpaces() ([]models.AdSpace, error) {
 		var adSpace models.AdSpace
 		var endTimeBytes []byte
 		if err := rows.Scan(&adSpace.ID, &adSpace.Name, &adSpace.BasePrice, &endTimeBytes, &adSpace.CurrentBid, &adSpace.WinnerID); err != nil {
+			log.Println("error while scanning query result. error:", err)
 			return nil, err
 		}
 		adSpace.EndTime, err = time.Parse(time.DateTime, string(endTimeBytes))
 		adSpaces = append(adSpaces, adSpace)
 		if err != nil {
+			log.Println("error while converting endTimeBytes. error:", err)
 			return nil, err
 		}
 	}
 
 	if err := rows.Err(); err != nil {
+		log.Println("rows.err(). error:", err)
 		return nil, err
 	}
 
@@ -50,10 +55,12 @@ func (r *AdSpaceRepository) GetAdSpaceByID(id int) (models.AdSpace, error) {
 		Scan(&adSpace.ID, &adSpace.Name, &adSpace.BasePrice, &endTimeBytes, &adSpace.CurrentBid, &adSpace.WinnerID)
 
 	if err != nil {
+		log.Println("error while executing query. error:", err)
 		return models.AdSpace{}, err
 	}
 	adSpace.EndTime, err = time.Parse(time.DateTime, string(endTimeBytes))
 	if err != nil {
+		log.Println("error while converting endTimeBytes. error:", err)
 		return models.AdSpace{}, err
 	}
 
@@ -64,11 +71,13 @@ func (r *AdSpaceRepository) CreateAdSpace(adSpace models.AdSpace) (int64, error)
 	result, err := r.db.Exec("INSERT INTO ad_spaces (name, base_price, end_time, current_bid, winner_id) VALUES (?, ?, ?, ?, ?)",
 		adSpace.Name, adSpace.BasePrice, adSpace.EndTime, adSpace.CurrentBid, adSpace.WinnerID)
 	if err != nil {
+		log.Println("error while executing query. error:", err)
 		return -1, err
 	}
 
 	adSpaceId, err := result.LastInsertId()
 	if err != nil {
+		log.Println("error while fetching lastInsertId. error:", err)
 		return -1, err
 	}
 
@@ -83,10 +92,12 @@ func (r *AdSpaceRepository) GetWinner(id int) (int, error) {
 		Scan(&adSpace.ID, &adSpace.Name, &adSpace.BasePrice, &endTimeBytes, &adSpace.CurrentBid, &adSpace.WinnerID)
 
 	if err != nil {
+		log.Println("error while executing query. error:", err)
 		return -1, errors.New("ad-space not found")
 	}
 	adSpace.EndTime, err = time.Parse(time.DateTime, string(endTimeBytes))
 	if err != nil {
+		log.Println("error while converting endTimeBytes. error:", err)
 		return -1, err
 	}
 	if adSpace.EndTime.After(time.Now().UTC()) {
@@ -102,6 +113,7 @@ func (r *AdSpaceRepository) FindWinner(adspaceID int) (int, error) {
 		Scan(&winnerID)
 
 	if err != nil {
+		log.Println("error while executing query. error:", err)
 		return -1, errors.New("no bids found for this ad-space")
 	}
 
@@ -111,12 +123,14 @@ func (r *AdSpaceRepository) FindWinner(adspaceID int) (int, error) {
 func (r *AdSpaceRepository) UpdateWinner(adspaceID int, winnerID int) (bool, error) {
 	stmt, err := r.db.Prepare("UPDATE ad_spaces SET winner_id = ? WHERE id = ?")
 	if err != nil {
+		log.Println("error while preparing update query. error:", err)
 		return false, err
 	}
 	defer stmt.Close()
 
 	_, err = stmt.Exec(winnerID, adspaceID)
 	if err != nil {
+		log.Println("error while executing update query. error:", err)
 		return false, err
 	}
 

@@ -4,6 +4,7 @@ import (
 	"auction-service/supply-side-service/models"
 	"auction-service/supply-side-service/repositories"
 	"errors"
+	"log"
 	"time"
 )
 
@@ -50,6 +51,7 @@ func (s *adSpaceService) GetWinner(adSpaceID int) (int, error) {
 
 	winnerID, err = s.repo.GetWinner(adSpaceID)
 	if err != nil {
+		log.Println("error in getWinner(). error:", err)
 		return -1, err
 	}
 
@@ -57,11 +59,13 @@ func (s *adSpaceService) GetWinner(adSpaceID int) (int, error) {
 		winnerID, err = s.repo.FindWinner(adSpaceID)
 	}
 	if err != nil {
+		log.Println("error in findWinner(). error:", err)
 		return -1, err
 	}
 
 	_, err = s.repo.UpdateWinner(adSpaceID, winnerID)
 	if err != nil {
+		log.Println("error in updateWinner(). error:", err)
 		return -1, err
 	}
 	return winnerID, nil

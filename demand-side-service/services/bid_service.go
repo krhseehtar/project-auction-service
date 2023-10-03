@@ -4,6 +4,7 @@ import (
 	"auction-service/demand-side-service/models"
 	"auction-service/demand-side-service/repositories"
 	"errors"
+	"log"
 	"time"
 )
 
@@ -36,6 +37,7 @@ func (s *bidService) CreateBidder(bidder models.Bidder) (int64, error) {
 
 	rowCount, err := s.repo.GetBidderByEmailId(bidder.Email)
 	if err != nil {
+		log.Println("error in getBidderByEmailId(). error:", err)
 		return -1, err
 	}
 
@@ -59,6 +61,7 @@ func (s *bidService) PlaceBid(bid models.Bid) (int64, error) {
 	var err error
 	bidderExists, err = s.repo.BidderExists(bid.BidderID)
 	if err != nil {
+		log.Println("error in bidderExists(). error:", err)
 		return -1, err
 	}
 	if !bidderExists {
@@ -67,6 +70,7 @@ func (s *bidService) PlaceBid(bid models.Bid) (int64, error) {
 
 	AdSpaceExists, err = s.repo.AdSpaceExists(bid.AdSpaceID)
 	if err != nil {
+		log.Println("error in adSpaceExists(). error:", err)
 		return -1, err
 	}
 	if !AdSpaceExists {
@@ -75,6 +79,7 @@ func (s *bidService) PlaceBid(bid models.Bid) (int64, error) {
 
 	isActive, err = s.repo.IsActive(bid.AdSpaceID)
 	if err != nil {
+		log.Println("error in isActive(). error:", err)
 		return -1, err
 	}
 	if !isActive {
@@ -83,6 +88,7 @@ func (s *bidService) PlaceBid(bid models.Bid) (int64, error) {
 
 	isValidBidAmount, err = s.repo.IsValidBidAmount(bid)
 	if err != nil {
+		log.Println("error in isValidBidAmount(). error:", err)
 		return -1, err
 	}
 	if !isValidBidAmount {
@@ -91,6 +97,7 @@ func (s *bidService) PlaceBid(bid models.Bid) (int64, error) {
 
 	_, err = s.repo.UpdateCurrentBid(bid)
 	if err != nil {
+		log.Println("error in updateCurrentBid(). error:", err)
 		return -1, err
 	}
 

@@ -3,6 +3,7 @@ package handlers
 import (
 	"auction-service/supply-side-service/models"
 	"auction-service/supply-side-service/services"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -20,7 +21,8 @@ func NewAdSpaceHandler(service services.AdSpaceService) AdSpaceHandler {
 func (h *AdSpaceHandler) GetAllAdSpaces(c *gin.Context) {
 	adSpaces, err := h.service.GetAllAdSpaces()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
+		log.Println("internal server error. error:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		return
 	}
 	if adSpaces == nil {
@@ -34,11 +36,13 @@ func (h *AdSpaceHandler) GetAdSpaceByID(c *gin.Context) {
 	adSpaceIDStr := c.Param("id")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)
 	if err != nil {
+		log.Println("invalid ad-space-id. Error:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ad-space-id"})
 		return
 	}
 	adSpace, err := h.service.GetAdSpaceByID(adSpaceID)
 	if err != nil {
+		log.Println("error in getAdSpaceByID(). error:", err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "adSpace not found"})
 		return
 	}
@@ -48,6 +52,7 @@ func (h *AdSpaceHandler) GetAdSpaceByID(c *gin.Context) {
 func (h *AdSpaceHandler) CreateAdSpace(c *gin.Context) {
 	var adSpace models.AdSpace
 	if err := c.ShouldBindJSON(&adSpace); err != nil {
+		log.Println("invalid request payload. Error:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request payload"})
 		return
 	}
@@ -63,11 +68,13 @@ func (h *AdSpaceHandler) GetWinner(c *gin.Context) {
 	adSpaceIDStr := c.Param("id")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)
 	if err != nil {
+		log.Println("invalid ad-space-id. error:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ad-space-id"})
 		return
 	}
 	winnerID, err := h.service.GetWinner(adSpaceID)
 	if err != nil {
+		log.Println("error in GetWinner(). error:", err)
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
