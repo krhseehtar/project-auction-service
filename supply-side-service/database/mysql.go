@@ -9,6 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// NewMySQLConnection connects to MySQL and returns a new Database instance
 func NewMySQLConnection() (*sql.DB, error) {
 	dbHost := os.Getenv("MYSQL_HOST")
 	dbUser := os.Getenv("MYSQL_USER")

@@ -11,14 +11,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// BidHandler handles HTTP requests related to bids and bidders.
 type BidHandler struct {
 	service services.BidService
 }
 
+// NewBidHandler creates a new BidHandler instance with the provided BidService.
 func NewBidHandler(service services.BidService) BidHandler {
 	return BidHandler{service: service}
 }
 
+// HandleRegisterBidder handles the registration of new bidders.
+// It expects a JSON payload containing bidder information.
+// If successful, it returns the created bidder's ID.
 func (h *BidHandler) HandleRegisterBidder(c *gin.Context) {
 	var bidder models.Bidder
 	if err := c.ShouldBind(&bidder); err != nil {
@@ -35,6 +40,7 @@ func (h *BidHandler) HandleRegisterBidder(c *gin.Context) {
 	}
 }
 
+// HandleGetAllBidders retrieves and returns all registered bidders.
 func (h *BidHandler) HandleGetAllBidders(c *gin.Context) {
 	bidders, err := h.service.GetAllBidders()
 	if err != nil {
@@ -46,6 +52,7 @@ func (h *BidHandler) HandleGetAllBidders(c *gin.Context) {
 
 }
 
+// HandleGetBidderByID retrieves a bidder by their ID and returns it.
 func (h *BidHandler) HandleGetBidderByID(c *gin.Context) {
 	bidderIDStr := c.Param("id")
 	bidderID, err := strconv.Atoi(bidderIDStr)
@@ -64,6 +71,7 @@ func (h *BidHandler) HandleGetBidderByID(c *gin.Context) {
 
 }
 
+// HandleGetBidsByAdSpaceID retrieves all bids for a specific ad space using its ID.
 func (h *BidHandler) HandleGetBidsByAdSpaceID(c *gin.Context) {
 	adSpaceIDStr := c.Param("id")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)
@@ -87,6 +95,9 @@ func (h *BidHandler) HandleGetBidsByAdSpaceID(c *gin.Context) {
 	c.JSON(http.StatusOK, bids)
 }
 
+// HandlePlaceBid handles placing a new bid for a specific ad space.
+// It expects a JSON payload containing bid information.
+// If successful, it returns the created bid's ID.
 func (h *BidHandler) HandlePlaceBid(c *gin.Context) {
 	var bidID int64
 	bidderIDStr := c.Param("id")
@@ -113,6 +124,7 @@ func (h *BidHandler) HandlePlaceBid(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "bid placed successfully", "bidID": bidID})
 }
 
+// HandleGetAllBidsByBidderID retrieves all bids placed by a specific bidder using their ID.
 func (h *BidHandler) HandleGetAllBidsByBidderID(c *gin.Context) {
 	adSpaceIDStr := c.Param("id")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)
@@ -135,6 +147,8 @@ func (h *BidHandler) HandleGetAllBidsByBidderID(c *gin.Context) {
 	c.JSON(http.StatusOK, bids)
 }
 
+// HandleGetAllBidsByBidderIDAndAdSpaceID retrieves all bids placed by a specific bidder
+// for a specific ad space using their IDs.
 func (h *BidHandler) HandleGetAllBidsByBidderIDAndAdSpaceID(c *gin.Context) {
 	adSpaceIDStr := c.Param("adspaceID")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)

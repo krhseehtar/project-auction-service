@@ -8,7 +8,6 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	// Import other necessary packages
 )
 
 func main() {
@@ -20,10 +19,14 @@ func main() {
 
 	router := gin.Default()
 
+	// Initialize repositories
 	adspaceRepository := repositories.NewAdSpaceRepository(db)
+	// Initialize services
 	adspaceService := services.NewAdSpaceService(adspaceRepository)
+	// Initialize handlers
 	adspaceHandler := handlers.NewAdSpaceHandler(adspaceService)
 
+	//group routes
 	adspaceRouter := router.Group("/supply-service/adspaces")
 	{
 		adspaceRouter.POST("", adspaceHandler.CreateAdSpace)
@@ -33,6 +36,7 @@ func main() {
 
 	}
 
+	// listen and serve on 0.0.0.0:8080
 	router.Run(":8080")
 
 }

@@ -22,10 +22,12 @@ type bidService struct {
 	repo repositories.BidRepository
 }
 
+// NewBidService creates a new BidService instance with the provided repository.
 func NewBidService(repo repositories.BidRepository) BidService {
 	return &bidService{repo: repo}
 }
 
+// CreateBidder creates a new bidder and validates the input data.
 func (s *bidService) CreateBidder(bidder models.Bidder) (int64, error) {
 
 	if len(bidder.Email) == 0 {
@@ -48,14 +50,17 @@ func (s *bidService) CreateBidder(bidder models.Bidder) (int64, error) {
 	return s.repo.CreateBidder(bidder)
 }
 
+// GetBidderById retrieves a bidder by their ID.
 func (s *bidService) GetBidderById(bidderID int) (models.Bidder, error) {
 	return s.repo.GetBidderById(bidderID)
 }
 
+// GetAllBidders retrieves all registered bidders.
 func (s *bidService) GetAllBidders() ([]models.Bidder, error) {
 	return s.repo.GetAllBidders()
 }
 
+// PlaceBid places a new bid for a specific ad space and validates the bid data.
 func (s *bidService) PlaceBid(bid models.Bid) (int64, error) {
 	var bidderExists, AdSpaceExists, isActive, isValidBidAmount bool
 	var err error
@@ -105,14 +110,17 @@ func (s *bidService) PlaceBid(bid models.Bid) (int64, error) {
 	return s.repo.CreateBid(bid)
 }
 
+// GetBidsByAdSpaceID retrieves bids for a specific ad space using its ID.
 func (s *bidService) GetBidsByAdSpaceID(adSpaceID int) ([]models.Bid, error) {
 	return s.repo.GetBidsByAdSpaceID(adSpaceID)
 }
 
+// GetAllBidsByBidderID retrieves bids placed by a specific bidder using their ID.
 func (s *bidService) GetAllBidsByBidderID(bidderID int) ([]models.Bid, error) {
 	return s.repo.GetBidsByBidderID(bidderID)
 }
 
+// GetAllBidsByBidderIDAndAdSpaceID retrieves bids placed by a specific bidder for a specific ad space using their IDs.
 func (s *bidService) GetAllBidsByBidderIDAndAdSpaceID(bidderID int, adspaceID int) ([]models.Bid, error) {
 	return s.repo.GetAllBidsByBidderIDAndAdSpaceID(bidderID, adspaceID)
 }

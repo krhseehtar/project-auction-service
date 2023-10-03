@@ -8,11 +8,10 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	//"net/http"
-	// Import other necessary packages
 )
 
 func main() {
+	// get db connection
 	db, err := database.NewMySQLConnection()
 	if err != nil {
 		log.Fatal("Error connecting to the database: ", err)
@@ -21,10 +20,14 @@ func main() {
 
 	router := gin.Default()
 
+	// Initialize repositories
 	bidRepository := repositories.NewBidRepository(db)
+	// Initialize services
 	bidService := services.NewBidService(bidRepository)
+	// Initialize handlers
 	bidHandler := handlers.NewBidHandler(bidService)
 
+	//group routes
 	biddersRouter := router.Group("/demand_service/bidders")
 	{
 		biddersRouter.POST("", bidHandler.HandleRegisterBidder)
@@ -39,5 +42,6 @@ func main() {
 		adspaceRouter.GET("/:id/bids", bidHandler.HandleGetBidsByAdSpaceID)
 
 	}
+	// listen and serve on 0.0.0.0:8080
 	router.Run(":8081")
 }

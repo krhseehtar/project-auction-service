@@ -12,10 +12,12 @@ type AdSpaceRepository struct {
 	db *sql.DB
 }
 
+// NewAdSpaceRepository creates a new AdSpaceRepository instance with the provided database connection.
 func NewAdSpaceRepository(db *sql.DB) AdSpaceRepository {
 	return AdSpaceRepository{db: db}
 }
 
+// GetAllAdSpaces retrieves all ad spaces from the database.
 func (r *AdSpaceRepository) GetAllAdSpaces() ([]models.AdSpace, error) {
 	rows, err := r.db.Query("SELECT * FROM ad_spaces")
 	if err != nil {
@@ -48,6 +50,7 @@ func (r *AdSpaceRepository) GetAllAdSpaces() ([]models.AdSpace, error) {
 	return adSpaces, nil
 }
 
+// GetAdSpaceByID retrieves an ad space by its ID from the database.
 func (r *AdSpaceRepository) GetAdSpaceByID(id int) (models.AdSpace, error) {
 	var adSpace models.AdSpace
 	var endTimeBytes []byte
@@ -67,6 +70,7 @@ func (r *AdSpaceRepository) GetAdSpaceByID(id int) (models.AdSpace, error) {
 	return adSpace, nil
 }
 
+// CreateAdSpace creates a new ad space in the database and returns its ID.
 func (r *AdSpaceRepository) CreateAdSpace(adSpace models.AdSpace) (int64, error) {
 	result, err := r.db.Exec("INSERT INTO ad_spaces (name, base_price, end_time, current_bid, winner_id) VALUES (?, ?, ?, ?, ?)",
 		adSpace.Name, adSpace.BasePrice, adSpace.EndTime, adSpace.CurrentBid, adSpace.WinnerID)
@@ -85,6 +89,7 @@ func (r *AdSpaceRepository) CreateAdSpace(adSpace models.AdSpace) (int64, error)
 
 }
 
+// GetWinner retrieves the winner of an ad space auction based on its ID.
 func (r *AdSpaceRepository) GetWinner(id int) (int, error) {
 	var adSpace models.AdSpace
 	var endTimeBytes []byte
@@ -107,6 +112,7 @@ func (r *AdSpaceRepository) GetWinner(id int) (int, error) {
 	return adSpace.WinnerID, nil
 }
 
+// FindWinner finds the winner of an ad space auction based on the highest bid amount.
 func (r *AdSpaceRepository) FindWinner(adspaceID int) (int, error) {
 	var winnerID int
 	err := r.db.QueryRow("SELECT bidder_id FROM bids WHERE bid_amount = ( SELECT MAX(bid_amount) FROM bids WHERE ad_space_id = ? )AND ad_space_id = ?", adspaceID, adspaceID).
@@ -120,6 +126,7 @@ func (r *AdSpaceRepository) FindWinner(adspaceID int) (int, error) {
 	return winnerID, nil
 }
 
+// UpdateWinner updates the winner of an ad space in the database.
 func (r *AdSpaceRepository) UpdateWinner(adspaceID int, winnerID int) (bool, error) {
 	stmt, err := r.db.Prepare("UPDATE ad_spaces SET winner_id = ? WHERE id = ?")
 	if err != nil {

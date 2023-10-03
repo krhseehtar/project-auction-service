@@ -10,14 +10,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// AdSpaceHandler handles HTTP requests related to ad spaces.
 type AdSpaceHandler struct {
 	service services.AdSpaceService
 }
 
+// NewAdSpaceHandler creates a new AdSpaceHandler instance with the provided AdSpaceService.
 func NewAdSpaceHandler(service services.AdSpaceService) AdSpaceHandler {
 	return AdSpaceHandler{service: service}
 }
 
+// GetAllAdSpaces handles the HTTP request to retrieve all ad spaces.
 func (h *AdSpaceHandler) GetAllAdSpaces(c *gin.Context) {
 	adSpaces, err := h.service.GetAllAdSpaces()
 	if err != nil {
@@ -32,6 +35,7 @@ func (h *AdSpaceHandler) GetAllAdSpaces(c *gin.Context) {
 	}
 }
 
+// GetAdSpaceByID handles the HTTP request to retrieve an ad space by its ID.
 func (h *AdSpaceHandler) GetAdSpaceByID(c *gin.Context) {
 	adSpaceIDStr := c.Param("id")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)
@@ -49,6 +53,7 @@ func (h *AdSpaceHandler) GetAdSpaceByID(c *gin.Context) {
 	c.JSON(http.StatusOK, adSpace)
 }
 
+// CreateAdSpace handles the HTTP request to create a new ad space.
 func (h *AdSpaceHandler) CreateAdSpace(c *gin.Context) {
 	var adSpace models.AdSpace
 	if err := c.ShouldBindJSON(&adSpace); err != nil {
@@ -64,6 +69,7 @@ func (h *AdSpaceHandler) CreateAdSpace(c *gin.Context) {
 
 }
 
+// GetWinner handles the HTTP request to retrieve the winner of an ad space auction.
 func (h *AdSpaceHandler) GetWinner(c *gin.Context) {
 	adSpaceIDStr := c.Param("id")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)

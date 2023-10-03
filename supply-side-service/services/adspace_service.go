@@ -19,18 +19,22 @@ type adSpaceService struct {
 	repo repositories.AdSpaceRepository
 }
 
+// NewAdSpaceService creates a new AdSpaceService instance with the provided repository.
 func NewAdSpaceService(repo repositories.AdSpaceRepository) AdSpaceService {
 	return &adSpaceService{repo: repo}
 }
 
+// GetAllAdSpaces retrieves all ad spaces from the repository.
 func (s *adSpaceService) GetAllAdSpaces() ([]models.AdSpace, error) {
 	return s.repo.GetAllAdSpaces()
 }
 
+// GetAdSpaceByID retrieves an ad space by its ID from the repository.
 func (s *adSpaceService) GetAdSpaceByID(id int) (models.AdSpace, error) {
 	return s.repo.GetAdSpaceByID(id)
 }
 
+// CreateAdSpace creates a new ad space in the repository with the provided details.
 func (s *adSpaceService) CreateAdSpace(adSpace models.AdSpace) (int64, error) {
 	currentTimestamp := time.Now().UTC()
 
@@ -45,6 +49,9 @@ func (s *adSpaceService) CreateAdSpace(adSpace models.AdSpace) (int64, error) {
 	}
 	return s.repo.CreateAdSpace(adSpace)
 }
+
+// GetWinner retrieves the winner of the specified ad space auction, handling both direct winner retrieval
+// and finding the winner if not directly available in the database.
 func (s *adSpaceService) GetWinner(adSpaceID int) (int, error) {
 	var winnerID int
 	var err error

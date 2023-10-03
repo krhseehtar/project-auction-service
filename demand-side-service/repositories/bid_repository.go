@@ -7,14 +7,17 @@ import (
 	"time"
 )
 
+// BidRepository handles database operations related to bids and bidders.
 type BidRepository struct {
 	db *sql.DB
 }
 
+// NewBidRepository creates a new BidRepository instance with the provided database connection.
 func NewBidRepository(db *sql.DB) BidRepository {
 	return BidRepository{db: db}
 }
 
+// GetBidsByAdSpaceID retrieves bids for a specific ad space using its ID.
 func (r *BidRepository) GetBidsByAdSpaceID(adSpaceID int) ([]models.Bid, error) {
 	rows, err := r.db.Query("SELECT * FROM bids where ad_space_id=?", adSpaceID)
 	if err != nil {
@@ -47,6 +50,7 @@ func (r *BidRepository) GetBidsByAdSpaceID(adSpaceID int) ([]models.Bid, error) 
 	return bids, nil
 }
 
+// GetBidsByBidderID retrieves bids placed by a specific bidder using their ID.
 func (r *BidRepository) GetBidsByBidderID(bidderID int) ([]models.Bid, error) {
 	rows, err := r.db.Query("SELECT * FROM bids where bidder_id=?", bidderID)
 	if err != nil {
@@ -79,6 +83,7 @@ func (r *BidRepository) GetBidsByBidderID(bidderID int) ([]models.Bid, error) {
 	return bids, nil
 }
 
+// GetAllBidsByBidderIDAndAdSpaceID retrieves bids placed by a specific bidder for a specific ad space using their IDs.
 func (r *BidRepository) GetAllBidsByBidderIDAndAdSpaceID(bidderID int, adspaceID int) ([]models.Bid, error) {
 	rows, err := r.db.Query("SELECT * FROM bids where bidder_id=? and ad_space_id = ?", bidderID, adspaceID)
 	if err != nil {
@@ -111,6 +116,7 @@ func (r *BidRepository) GetAllBidsByBidderIDAndAdSpaceID(bidderID int, adspaceID
 	return bids, nil
 }
 
+// CreateBid adds a new bid to the database and returns the generated bid ID.
 func (r *BidRepository) CreateBid(bid models.Bid) (int64, error) {
 	result, err := r.db.Exec("INSERT INTO bids (ad_space_id, bidder_id, bid_amount, timestamp) VALUES (?, ?, ?, ?)",
 		bid.AdSpaceID, bid.BidderID, bid.BidAmount, bid.Timestamp)
@@ -128,6 +134,7 @@ func (r *BidRepository) CreateBid(bid models.Bid) (int64, error) {
 	return bidID, nil
 }
 
+// CreateBidder adds a new bidder to the database and returns the generated bidder ID.
 func (r *BidRepository) CreateBidder(bidder models.Bidder) (int64, error) {
 	result, err := r.db.Exec("INSERT INTO bidders (name, email) VALUES (?, ?)",
 		bidder.Name, bidder.Email)
@@ -145,6 +152,7 @@ func (r *BidRepository) CreateBidder(bidder models.Bidder) (int64, error) {
 	return bidderID, nil
 }
 
+// GetBidderById retrieves a bidder by their ID and returns it.
 func (r *BidRepository) GetBidderById(bidderID int) (models.Bidder, error) {
 	var bidder models.Bidder
 	err := r.db.QueryRow("SELECT id, name, email from bidders WHERE id = ?", bidderID).
@@ -158,6 +166,7 @@ func (r *BidRepository) GetBidderById(bidderID int) (models.Bidder, error) {
 	return bidder, nil
 }
 
+// GetAllBidders retrieves all registered bidders from the database.
 func (r *BidRepository) GetAllBidders() ([]models.Bidder, error) {
 	rows, err := r.db.Query("SELECT * FROM bidders")
 	if err != nil {
@@ -184,6 +193,7 @@ func (r *BidRepository) GetAllBidders() ([]models.Bidder, error) {
 	return bidders, nil
 }
 
+// GetBidderByEmailId checks if a bidder with the given email ID exists in the database.
 func (r *BidRepository) GetBidderByEmailId(emailID string) (int64, error) {
 	var rowsAffected int64
 	err := r.db.QueryRow("SELECT COUNT(*) FROM bidders WHERE email = ?", emailID).Scan(&rowsAffected)
@@ -196,6 +206,7 @@ func (r *BidRepository) GetBidderByEmailId(emailID string) (int64, error) {
 	return rowsAffected, nil
 }
 
+// AdSpaceExists checks if an ad space with the given ID exists in the database.
 func (r *BidRepository) AdSpaceExists(adSpaceID int) (bool, error) {
 	var rowsAffected int64
 	err := r.db.QueryRow("SELECT COUNT(*) FROM ad_spaces WHERE id = ?", adSpaceID).Scan(&rowsAffected)
@@ -208,6 +219,7 @@ func (r *BidRepository) AdSpaceExists(adSpaceID int) (bool, error) {
 	return rowsAffected > 0, nil
 }
 
+// BidderExists checks if a bidder with the given ID exists in the database.
 func (r *BidRepository) BidderExists(BidderID int) (bool, error) {
 	var rowsAffected int64
 	err := r.db.QueryRow("SELECT COUNT(*) FROM bidders WHERE id = ?", BidderID).Scan(&rowsAffected)
@@ -219,6 +231,7 @@ func (r *BidRepository) BidderExists(BidderID int) (bool, error) {
 	return rowsAffected > 0, nil
 }
 
+// IsActive checks if a specific ad space auction is active (not expired).
 func (r *BidRepository) IsActive(adSpaceID int) (bool, error) {
 	var endTime time.Time
 	var endTimeBytes []byte
@@ -240,6 +253,7 @@ func (r *BidRepository) IsActive(adSpaceID int) (bool, error) {
 	return true, nil
 }
 
+// IsValidBidAmount checks if the bid amount is valid based on ad space's base price and current bid.
 func (r *BidRepository) IsValidBidAmount(bid models.Bid) (bool, error) {
 	var basePrice float64
 	var currentBid float64
@@ -256,6 +270,7 @@ func (r *BidRepository) IsValidBidAmount(bid models.Bid) (bool, error) {
 	return false, nil
 }
 
+// UpdateCurrentBid updates the current bid amount for a specific ad space in the database.
 func (r *BidRepository) UpdateCurrentBid(bid models.Bid) (bool, error) {
 	stmt, err := r.db.Prepare("UPDATE ad_spaces SET current_bid = ? WHERE id = ?")
 	if err != nil {
