@@ -114,7 +114,7 @@ func (r *BidRepository) CreateBid(bid models.Bid) (int64, error) {
 }
 
 func (r *BidRepository) CreateBidder(bidder models.Bidder) (int64, error) {
-	result, err := r.db.Exec("INSERT INTO bidders (Name, Email) VALUES (?, ?)",
+	result, err := r.db.Exec("INSERT INTO bidders (name, email) VALUES (?, ?)",
 		bidder.Name, bidder.Email)
 	if err != nil {
 		return -1, err
@@ -130,7 +130,7 @@ func (r *BidRepository) CreateBidder(bidder models.Bidder) (int64, error) {
 
 func (r *BidRepository) GetBidderById(bidderID int) (models.Bidder, error) {
 	var bidder models.Bidder
-	err := r.db.QueryRow("SELECT BidderID, Name, Email from Bidders WHERE BidderID = ?", bidderID).
+	err := r.db.QueryRow("SELECT id, name, email from bidders WHERE id = ?", bidderID).
 		Scan(&bidder.ID, &bidder.Name, &bidder.Email)
 
 	if err != nil {
@@ -142,7 +142,7 @@ func (r *BidRepository) GetBidderById(bidderID int) (models.Bidder, error) {
 }
 
 func (r *BidRepository) GetAllBidders() ([]models.Bidder, error) {
-	rows, err := r.db.Query("SELECT * FROM Bidders")
+	rows, err := r.db.Query("SELECT * FROM bidders")
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +166,7 @@ func (r *BidRepository) GetAllBidders() ([]models.Bidder, error) {
 
 func (r *BidRepository) GetBidderByEmailId(emailID string) (int64, error) {
 	var rowsAffected int64
-	err := r.db.QueryRow("SELECT COUNT(*) FROM Bidders WHERE Email = ?", emailID).Scan(&rowsAffected)
+	err := r.db.QueryRow("SELECT COUNT(*) FROM bidders WHERE email = ?", emailID).Scan(&rowsAffected)
 
 	if err != nil {
 		return -1, err
@@ -188,7 +188,7 @@ func (r *BidRepository) AdSpaceExists(adSpaceID int) (bool, error) {
 
 func (r *BidRepository) BidderExists(BidderID int) (bool, error) {
 	var rowsAffected int64
-	err := r.db.QueryRow("SELECT COUNT(*) FROM bidders WHERE BidderID = ?", BidderID).Scan(&rowsAffected)
+	err := r.db.QueryRow("SELECT COUNT(*) FROM bidders WHERE id = ?", BidderID).Scan(&rowsAffected)
 
 	if err != nil {
 		return false, err

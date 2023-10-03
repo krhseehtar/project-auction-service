@@ -8,6 +8,7 @@ COPY . .
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o supply-side-service .
 
+CMD ["go","run","main.go"]
 # Final Stage
 FROM alpine:latest
 
