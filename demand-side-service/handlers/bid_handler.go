@@ -24,11 +24,7 @@ func (h *BidHandler) HandleRegisterBidder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request payload"})
 		return
 	}
-
-	var bidderID int64
-	var err error
-
-	if bidderID, err = h.service.CreateBidder(bidder); err != nil {
+	if bidderID, err := h.service.CreateBidder(bidder); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
 		c.JSON(http.StatusCreated, gin.H{
@@ -47,7 +43,6 @@ func (h *BidHandler) HandleGetAllBidders(c *gin.Context) {
 }
 
 func (h *BidHandler) HandleGetBidderByID(c *gin.Context) {
-
 	bidderIDStr := c.Param("id")
 	bidderID, err := strconv.Atoi(bidderIDStr)
 	if err != nil {
@@ -132,7 +127,6 @@ func (h *BidHandler) HandleGetAllBidsByBidderIDAndAdSpaceID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ad-space-id"})
 		return
 	}
-
 	bidderIDStr := c.Param("id")
 	bidderID, err := strconv.Atoi(bidderIDStr)
 	if err != nil {

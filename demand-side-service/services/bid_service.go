@@ -43,34 +43,20 @@ func (s *bidService) CreateBidder(bidder models.Bidder) (int64, error) {
 		return -1, errors.New("email id already exists")
 	}
 
-	// Place the bid in the repository
-
 	return s.repo.CreateBidder(bidder)
 }
 
 func (s *bidService) GetBidderById(bidderID int) (models.Bidder, error) {
-	// Validate bid properties if necessary
-
-	// Place the bid in the repository
-
 	return s.repo.GetBidderById(bidderID)
 }
 
 func (s *bidService) GetAllBidders() ([]models.Bidder, error) {
-	// Validate bid properties if necessary
-
-	// Place the bid in the repository
-
 	return s.repo.GetAllBidders()
 }
 
 func (s *bidService) PlaceBid(bid models.Bid) (int64, error) {
-	// Validate bid properties
-	var bidderExists bool
-	var AdSpaceExists bool
-	var isActive bool
+	var bidderExists, AdSpaceExists, isActive, isValidBidAmount bool
 	var err error
-	var isValidBidAmount bool
 	bidderExists, err = s.repo.BidderExists(bid.BidderID)
 	if err != nil {
 		return -1, err
@@ -108,7 +94,6 @@ func (s *bidService) PlaceBid(bid models.Bid) (int64, error) {
 		return -1, err
 	}
 
-	// Place the bid in the repository
 	bid.Timestamp = time.Now().UTC()
 	return s.repo.CreateBid(bid)
 }

@@ -32,7 +32,6 @@ func (r *AdSpaceRepository) GetAllAdSpaces() ([]models.AdSpace, error) {
 		adSpace.EndTime, err = time.Parse("2006-01-02 15:04:05", string(endTimeBytes))
 		adSpaces = append(adSpaces, adSpace)
 		if err != nil {
-			// Handle error (e.g., ad space not found)
 			return nil, err
 		}
 	}
@@ -51,12 +50,10 @@ func (r *AdSpaceRepository) GetAdSpaceByID(id int) (models.AdSpace, error) {
 		Scan(&adSpace.ID, &adSpace.Name, &adSpace.BasePrice, &endTimeBytes, &adSpace.CurrentBid, &adSpace.WinnerID)
 
 	if err != nil {
-		// Handle error (e.g., ad space not found)
 		return models.AdSpace{}, err
 	}
 	adSpace.EndTime, err = time.Parse("2006-01-02 15:04:05", string(endTimeBytes))
 	if err != nil {
-		// Handle error (e.g., ad space not found)
 		return models.AdSpace{}, err
 	}
 
@@ -70,8 +67,7 @@ func (r *AdSpaceRepository) CreateAdSpace(adSpace models.AdSpace) (int64, error)
 		return -1, err
 	}
 
-	var adSpaceId int64
-	adSpaceId, err = result.LastInsertId()
+	adSpaceId, err := result.LastInsertId()
 	if err != nil {
 		return -1, err
 	}

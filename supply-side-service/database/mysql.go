@@ -16,9 +16,9 @@ func NewMySQLConnection() (*sql.DB, error) {
 	dbName := os.Getenv("MYSQL_NAME")
 	dbPort := os.Getenv("MYSQL_PORT")
 
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
+	dataSourceString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
 
-	db, err := sql.Open("mysql", dataSourceName)
+	db, err := sql.Open("mysql", dataSourceString)
 	if err != nil {
 		log.Println("Error connecting to the database:", err)
 		return nil, err

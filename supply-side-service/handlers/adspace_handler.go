@@ -47,13 +47,11 @@ func (h *AdSpaceHandler) GetAdSpaceByID(c *gin.Context) {
 
 func (h *AdSpaceHandler) CreateAdSpace(c *gin.Context) {
 	var adSpace models.AdSpace
-	var adSpaceID int64
-	var err error
 	if err := c.ShouldBindJSON(&adSpace); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request payload"})
 		return
 	}
-	if adSpaceID, err = h.service.CreateAdSpace(adSpace); err != nil {
+	if adSpaceID, err := h.service.CreateAdSpace(adSpace); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
 		c.JSON(http.StatusCreated, gin.H{"message": "ad space created successfully", "adSpaceID": adSpaceID})

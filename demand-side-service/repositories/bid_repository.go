@@ -10,6 +10,8 @@ type BidRepository struct {
 	db *sql.DB
 }
 
+const TimeFormat = "2006-01-02 15:04:05"
+
 func NewBidRepository(db *sql.DB) BidRepository {
 	return BidRepository{db: db}
 }
@@ -28,7 +30,7 @@ func (r *BidRepository) GetBidsByAdSpaceID(adSpaceID int) ([]models.Bid, error) 
 		if err := rows.Scan(&bid.ID, &bid.AdSpaceID, &bid.BidderID, &bid.BidAmount, &endTimeBytes); err != nil {
 			return nil, err
 		}
-		bid.Timestamp, err = time.Parse("2006-01-02 15:04:05", string(endTimeBytes))
+		bid.Timestamp, err = time.Parse(TimeFormat, string(endTimeBytes))
 		if err != nil {
 			return nil, err
 		}
@@ -56,7 +58,7 @@ func (r *BidRepository) GetBidsByBidderID(bidderID int) ([]models.Bid, error) {
 		if err := rows.Scan(&bid.ID, &bid.AdSpaceID, &bid.BidderID, &bid.BidAmount, &endTimeBytes); err != nil {
 			return nil, err
 		}
-		bid.Timestamp, err = time.Parse("2006-01-02 15:04:05", string(endTimeBytes))
+		bid.Timestamp, err = time.Parse(TimeFormat, string(endTimeBytes))
 		if err != nil {
 			return nil, err
 		}
@@ -84,7 +86,7 @@ func (r *BidRepository) GetAllBidsByBidderIDAndAdSpaceID(bidderID int, adspaceID
 		if err := rows.Scan(&bid.ID, &bid.AdSpaceID, &bid.BidderID, &bid.BidAmount, &endTimeBytes); err != nil {
 			return nil, err
 		}
-		bid.Timestamp, err = time.Parse("2006-01-02 15:04:05", string(endTimeBytes))
+		bid.Timestamp, err = time.Parse(TimeFormat, string(endTimeBytes))
 		if err != nil {
 			return nil, err
 		}
@@ -134,7 +136,6 @@ func (r *BidRepository) GetBidderById(bidderID int) (models.Bidder, error) {
 		Scan(&bidder.ID, &bidder.Name, &bidder.Email)
 
 	if err != nil {
-		// Handle error (e.g., ad space not found)
 		return models.Bidder{}, err
 	}
 
@@ -204,15 +205,11 @@ func (r *BidRepository) IsActive(adSpaceID int) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	endTime, err = time.Parse("2006-01-02 15:04:05", string(endTimeBytes))
+	endTime, err = time.Parse(TimeFormat, string(endTimeBytes))
 	if err != nil {
 		return false, err
 	}
-
-	// Get the current timestamp.
 	currentTimestamp := time.Now().UTC()
-
-	// Check if the auction has ended.
 	if currentTimestamp.After(endTime) {
 		return false, nil
 	}
@@ -228,7 +225,6 @@ func (r *BidRepository) IsValidBidAmount(bid models.Bid) (bool, error) {
 		return false, err
 	}
 
-	// Check if the auction has ended.
 	if bid.BidAmount >= basePrice && bid.BidAmount > currentBid {
 		return true, nil
 	}
