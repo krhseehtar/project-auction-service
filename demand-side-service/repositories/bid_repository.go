@@ -10,8 +10,6 @@ type BidRepository struct {
 	db *sql.DB
 }
 
-const TimeFormat = "2006-01-02 15:04:05"
-
 func NewBidRepository(db *sql.DB) BidRepository {
 	return BidRepository{db: db}
 }
@@ -30,7 +28,7 @@ func (r *BidRepository) GetBidsByAdSpaceID(adSpaceID int) ([]models.Bid, error) 
 		if err := rows.Scan(&bid.ID, &bid.AdSpaceID, &bid.BidderID, &bid.BidAmount, &endTimeBytes); err != nil {
 			return nil, err
 		}
-		bid.Timestamp, err = time.Parse(TimeFormat, string(endTimeBytes))
+		bid.Timestamp, err = time.Parse(time.DateTime, string(endTimeBytes))
 		if err != nil {
 			return nil, err
 		}
@@ -58,7 +56,7 @@ func (r *BidRepository) GetBidsByBidderID(bidderID int) ([]models.Bid, error) {
 		if err := rows.Scan(&bid.ID, &bid.AdSpaceID, &bid.BidderID, &bid.BidAmount, &endTimeBytes); err != nil {
 			return nil, err
 		}
-		bid.Timestamp, err = time.Parse(TimeFormat, string(endTimeBytes))
+		bid.Timestamp, err = time.Parse(time.DateTime, string(endTimeBytes))
 		if err != nil {
 			return nil, err
 		}
@@ -86,7 +84,7 @@ func (r *BidRepository) GetAllBidsByBidderIDAndAdSpaceID(bidderID int, adspaceID
 		if err := rows.Scan(&bid.ID, &bid.AdSpaceID, &bid.BidderID, &bid.BidAmount, &endTimeBytes); err != nil {
 			return nil, err
 		}
-		bid.Timestamp, err = time.Parse(TimeFormat, string(endTimeBytes))
+		bid.Timestamp, err = time.Parse(time.DateTime, string(endTimeBytes))
 		if err != nil {
 			return nil, err
 		}
@@ -205,7 +203,7 @@ func (r *BidRepository) IsActive(adSpaceID int) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	endTime, err = time.Parse(TimeFormat, string(endTimeBytes))
+	endTime, err = time.Parse(time.DateTime, string(endTimeBytes))
 	if err != nil {
 		return false, err
 	}

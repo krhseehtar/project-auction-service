@@ -29,7 +29,7 @@ func (r *AdSpaceRepository) GetAllAdSpaces() ([]models.AdSpace, error) {
 		if err := rows.Scan(&adSpace.ID, &adSpace.Name, &adSpace.BasePrice, &endTimeBytes, &adSpace.CurrentBid, &adSpace.WinnerID); err != nil {
 			return nil, err
 		}
-		adSpace.EndTime, err = time.Parse("2006-01-02 15:04:05", string(endTimeBytes))
+		adSpace.EndTime, err = time.Parse(time.DateTime, string(endTimeBytes))
 		adSpaces = append(adSpaces, adSpace)
 		if err != nil {
 			return nil, err
@@ -52,7 +52,7 @@ func (r *AdSpaceRepository) GetAdSpaceByID(id int) (models.AdSpace, error) {
 	if err != nil {
 		return models.AdSpace{}, err
 	}
-	adSpace.EndTime, err = time.Parse("2006-01-02 15:04:05", string(endTimeBytes))
+	adSpace.EndTime, err = time.Parse(time.DateTime, string(endTimeBytes))
 	if err != nil {
 		return models.AdSpace{}, err
 	}
@@ -85,7 +85,7 @@ func (r *AdSpaceRepository) GetWinner(id int) (int, error) {
 	if err != nil {
 		return -1, errors.New("ad-space not found")
 	}
-	adSpace.EndTime, err = time.Parse("2006-01-02 15:04:05", string(endTimeBytes))
+	adSpace.EndTime, err = time.Parse(time.DateTime, string(endTimeBytes))
 	if err != nil {
 		return -1, err
 	}
