@@ -10,14 +10,13 @@ import (
 )
 
 func NewMySQLConnection() (*sql.DB, error) {
-	// dbHost := "host.docker.internal"
 	dbHost := os.Getenv("MYSQL_HOST")
 	dbUser := os.Getenv("MYSQL_USER")
 	dbPassword := os.Getenv("MYSQL_PASSWORD")
 	dbName := os.Getenv("MYSQL_NAME")
+	dbPort := os.Getenv("MYSQL_PORT")
 
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", dbUser, dbPassword, dbHost, dbName)
-	fmt.Println(dataSourceName)
+	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
 
 	db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {

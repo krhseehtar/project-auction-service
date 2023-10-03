@@ -8,7 +8,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql # Mount the initialization script
+      - ./mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql
     networks:
       - mynetwork
     restart: unless-stopped
@@ -17,11 +17,11 @@ services:
     build:
       context: ./supply-side-service
     environment:
-      - MYSQL_HOST=mysql_db # Set the MySQL host environment variable
+      - MYSQL_HOST=mysql_db
       - MYSQL_USER=root
       - MYSQL_PASSWORD=password
       - MYSQL_NAME=auction_db
-
+      - MYSQL_PORT=3306
     depends_on:
       - mysql_db
     ports:
@@ -34,10 +34,11 @@ services:
     build:
       context: ./demand-side-service
     environment:
-      - MYSQL_HOST=mysql_db # Set the MySQL host environment variable
+      - MYSQL_HOST=mysql_db
       - MYSQL_USER=root
       - MYSQL_PASSWORD=password
       - MYSQL_NAME=auction_db
+      - MYSQL_PORT=3306
     depends_on:
       - mysql_db
     ports:
