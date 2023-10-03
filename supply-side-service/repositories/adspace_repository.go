@@ -87,8 +87,7 @@ func (r *AdSpaceRepository) GetWinner(id int) (int, error) {
 		Scan(&adSpace.ID, &adSpace.Name, &adSpace.BasePrice, &endTimeBytes, &adSpace.CurrentBid, &adSpace.WinnerID)
 
 	if err != nil {
-		// Handle error (e.g., ad space not found)
-		return -1, err
+		return -1, errors.New("ad-space not found")
 	}
 	adSpace.EndTime, err = time.Parse("2006-01-02 15:04:05", string(endTimeBytes))
 	if err != nil {
@@ -107,8 +106,7 @@ func (r *AdSpaceRepository) FindWinner(adspaceID int) (int, error) {
 		Scan(&winnerID)
 
 	if err != nil {
-		// Handle error (e.g., ad space not found)
-		return -1, err
+		return -1, errors.New("no bids found for this ad-space")
 	}
 
 	return winnerID, nil

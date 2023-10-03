@@ -24,7 +24,7 @@ func (h *AdSpaceHandler) GetAllAdSpaces(c *gin.Context) {
 		return
 	}
 	if adSpaces == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "No adspaces are available"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "no adspaces are available"})
 	} else {
 		c.JSON(http.StatusOK, adSpaces)
 	}
@@ -34,12 +34,12 @@ func (h *AdSpaceHandler) GetAdSpaceByID(c *gin.Context) {
 	adSpaceIDStr := c.Param("id")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid adSpaceID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ad-space-id"})
 		return
 	}
 	adSpace, err := h.service.GetAdSpaceByID(adSpaceID)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "AdSpace not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "adSpace not found"})
 		return
 	}
 	c.JSON(http.StatusOK, adSpace)
@@ -50,13 +50,13 @@ func (h *AdSpaceHandler) CreateAdSpace(c *gin.Context) {
 	var adSpaceID int64
 	var err error
 	if err := c.ShouldBindJSON(&adSpace); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request payload"})
 		return
 	}
 	if adSpaceID, err = h.service.CreateAdSpace(adSpace); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
-		c.JSON(http.StatusCreated, gin.H{"message": "Ad space created successfully", "adSpaceID": adSpaceID})
+		c.JSON(http.StatusCreated, gin.H{"message": "ad space created successfully", "adSpaceID": adSpaceID})
 	}
 
 }
@@ -65,7 +65,7 @@ func (h *AdSpaceHandler) GetWinner(c *gin.Context) {
 	adSpaceIDStr := c.Param("id")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid adSpaceID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ad-space-id"})
 		return
 	}
 	winnerID, err := h.service.GetWinner(adSpaceID)

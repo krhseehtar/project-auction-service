@@ -21,7 +21,7 @@ func NewBidHandler(service services.BidService) BidHandler {
 func (h *BidHandler) HandleRegisterBidder(c *gin.Context) {
 	var bidder models.Bidder
 	if err := c.ShouldBind(&bidder); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request payload"})
 		return
 	}
 
@@ -32,7 +32,7 @@ func (h *BidHandler) HandleRegisterBidder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
 		c.JSON(http.StatusCreated, gin.H{
-			"message": "Bidder registered successfully", "BidderID": bidderID})
+			"message": "bidder registered successfully", "BidderID": bidderID})
 	}
 }
 
@@ -67,13 +67,17 @@ func (h *BidHandler) HandleGetBidsByAdSpaceID(c *gin.Context) {
 	adSpaceIDStr := c.Param("id")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid adSpaceID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ad_space_id"})
 		return
 	}
 	bids, err := h.service.GetBidsByAdSpaceID(adSpaceID)
 	fmt.Println(err)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Bids not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "bids not found"})
+		return
+	}
+	if bids == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "no bids are placed for this ad-space"})
 		return
 	}
 	c.JSON(http.StatusOK, bids)
@@ -84,7 +88,7 @@ func (h *BidHandler) HandlePlaceBid(c *gin.Context) {
 	bidderIDStr := c.Param("id")
 	bidderID, err := strconv.Atoi(bidderIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid adSpaceID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ad-space-id"})
 		return
 	}
 	var bid models.Bid
@@ -99,20 +103,23 @@ func (h *BidHandler) HandlePlaceBid(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Bid placed successfully", "bidID": bidID})
+	c.JSON(http.StatusCreated, gin.H{"message": "bid placed successfully", "bidID": bidID})
 }
 
 func (h *BidHandler) HandleGetAllBidsByBidderID(c *gin.Context) {
 	adSpaceIDStr := c.Param("id")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid adSpaceID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ad-space-id"})
 		return
 	}
 	bids, err := h.service.GetAllBidsByBidderID(adSpaceID)
-	fmt.Println(err)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Bids not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "bids not found"})
+		return
+	}
+	if bids == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "no bids are placed by the bidder"})
 		return
 	}
 	c.JSON(http.StatusOK, bids)
@@ -122,20 +129,23 @@ func (h *BidHandler) HandleGetAllBidsByBidderIDAndAdSpaceID(c *gin.Context) {
 	adSpaceIDStr := c.Param("adspaceID")
 	adSpaceID, err := strconv.Atoi(adSpaceIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid adSpaceID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ad-space-id"})
 		return
 	}
 
 	bidderIDStr := c.Param("id")
 	bidderID, err := strconv.Atoi(bidderIDStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid bidderID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid bidder-id"})
 		return
 	}
 	bids, err := h.service.GetAllBidsByBidderIDAndAdSpaceID(bidderID, adSpaceID)
-	fmt.Println(err)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Bids not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "bids not found"})
+		return
+	}
+	if bids == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "no bids are placed by the bidder for this ad-space"})
 		return
 	}
 	c.JSON(http.StatusOK, bids)
