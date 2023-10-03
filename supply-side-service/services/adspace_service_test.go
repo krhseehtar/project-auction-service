@@ -6,8 +6,6 @@ import (
 	"auction-service/supply-side-service/repositories"
 	"testing"
 	"time"
-	// Import your packages here
-	// ...
 )
 
 func TestGetAllAdSpaces(t *testing.T) {
@@ -17,7 +15,6 @@ func TestGetAllAdSpaces(t *testing.T) {
 	}
 
 	var adSpaces []models.AdSpace
-	// Initialize your repository with the test database connection
 	repo := repositories.NewAdSpaceRepository(db)
 	service := NewAdSpaceService(repo)
 
@@ -36,17 +33,13 @@ func TestCreateAdSpace(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	// Initialize your repository with the test database connection
 	repo := repositories.NewAdSpaceRepository(db)
 	service := NewAdSpaceService(repo)
 
-	// Create a test AdSpace
 	adSpace := models.AdSpace{
-		// Set AdSpace properties for testing
 		Name:      "Test Ad Space",
 		BasePrice: 100,
-		EndTime:   time.Now().Add(time.Hour), // Set end time in the future
+		EndTime:   time.Now().Add(time.Hour),
 	}
 
 	adSpaceID, err := service.CreateAdSpace(adSpace)
@@ -66,7 +59,6 @@ func TestGetAdSpaceByID(t *testing.T) {
 	}
 
 	adspaceID := 1
-	// Initialize your repository with the test database connection
 	repo := repositories.NewAdSpaceRepository(db)
 	service := NewAdSpaceService(repo)
 
@@ -86,7 +78,6 @@ func TestGetWinner(t *testing.T) {
 	}
 
 	adspaceID := 1
-	// Initialize your repository with the test database connection
 	repo := repositories.NewAdSpaceRepository(db)
 	service := NewAdSpaceService(repo)
 

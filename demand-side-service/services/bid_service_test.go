@@ -14,11 +14,9 @@ func TestCreateBidder(t *testing.T) {
 	}
 
 	bidder := models.Bidder{
-		// Set AdSpace properties for testing
 		Name:  "Test Bidder",
 		Email: "example1@gmail.com",
 	}
-	// Initialize your repository with the test database connection
 	repo := repositories.NewBidRepository(db)
 	service := NewBidService(repo)
 
@@ -39,7 +37,6 @@ func TestGetAllBidders(t *testing.T) {
 	}
 
 	var adSpaces []models.Bidder
-	// Initialize your repository with the test database connection
 	repo := repositories.NewBidRepository(db)
 	service := NewBidService(repo)
 
@@ -60,12 +57,10 @@ func TestPlaceBid(t *testing.T) {
 	}
 
 	bid := models.Bid{
-		// Set AdSpace properties for testing
 		AdSpaceID: 1,
 		BidderID:  1,
 		BidAmount: 110,
 	}
-	// Initialize your repository with the test database connection
 	repo := repositories.NewBidRepository(db)
 	service := NewBidService(repo)
 
@@ -87,7 +82,6 @@ func TestGetBidsByAdSpaceID(t *testing.T) {
 
 	var bids []models.Bid
 	adSpaceID := 1
-	// Initialize your repository with the test database connection
 	repo := repositories.NewBidRepository(db)
 	service := NewBidService(repo)
 
