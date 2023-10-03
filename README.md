@@ -84,4 +84,8 @@ This repository contains a Go-based auction service for managing ad spaces on a 
     Once the application is running, you can supply-services at http://localhost:8080/supply-service
     and demand-services http://localhost:8081/demand-service. 
 
+    
+## API Collection
+https://api.postman.com/collections/10344094-ec0014fc-64a7-4a75-9295-69b6723b1b07?access_key=PMAT-01HBTBFQMWH65CRWCNWR9PRMB1
+
 
